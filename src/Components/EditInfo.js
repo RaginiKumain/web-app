@@ -25,7 +25,7 @@ const EditInfo = ({ onUpdate, onDelete }) => {
         if (response.ok) {
           const userData = await response.json();
           console.log('Received user data in EditInfo component:', userData);
-          setUser(userData.user);
+          setUser(userData.data);
         } else {
           console.error('Error fetching user data:', response.status);
         }
@@ -73,7 +73,7 @@ const EditInfo = ({ onUpdate, onDelete }) => {
   return (
     <div className="edit-info">
       <h2>Edit User Information</h2>
-      {user && <Registration user={user} onSubmit={handleUpdate} />}
+      {user && <Registration formData={user} onSubmit={handleUpdate} />}
       <button type="button" onClick={handleDelete} className="btn-del">
         Delete User
       </button>
