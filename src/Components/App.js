@@ -53,7 +53,7 @@ const App = () => {
           <p style={{ color: 'red' }}>{error}</p>
         ) : (
           <Routes>
-            <Route path={`${basePath}/registration`} element={<Registration addUser={addUser} userList={userList} setUserList={setUserList} />} />
+            <Route path={`${basePath}/registration`} element={<Registration onSubmit={addUser} formData={null} setUserList={setUserList} />} />
             <Route path={`${basePath}/login`} element={<Login />} />
             <Route path={`${basePath}/user/:_id/editInfo`} element={<EditInfo userList={userList} />} />
             <Route path={`${basePath}/userList`} element={<UserList userList={userList} />} />

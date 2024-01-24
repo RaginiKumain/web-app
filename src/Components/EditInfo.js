@@ -1,13 +1,11 @@
-// EditInfo.js
-import './style.css';
-// EditInfo.js
 
+import './style.css';
 import React, { useState, useEffect } from 'react';
 import Registration from './Registration';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './style.css';
 
-const EditInfo = ({ onUpdate, onDelete }) => {
+const EditInfo = ({setUserList }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(null);
@@ -47,7 +45,6 @@ const EditInfo = ({ onUpdate, onDelete }) => {
         body: JSON.stringify(updatedUser),
       });
 
-      onUpdate(updatedUser);
       navigate('/myapp/userList'); // Redirect to userList after update
     } catch (error) {
       console.error('Error updating user:', error);
@@ -62,7 +59,6 @@ const EditInfo = ({ onUpdate, onDelete }) => {
         method: 'DELETE',
       });
 
-      onDelete(location.state.user._id);
       navigate('/myapp/userList'); // Redirect to userList after deletion
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -73,7 +69,7 @@ const EditInfo = ({ onUpdate, onDelete }) => {
   return (
     <div className="edit-info">
       <h2>Edit User Information</h2>
-      {user && <Registration formData={user} onSubmit={handleUpdate} />}
+      {user && <Registration formData={user} onSubmit={handleUpdate} setUserList={setUserList} />}
       <button type="button" onClick={handleDelete} className="btn-del">
         Delete User
       </button>

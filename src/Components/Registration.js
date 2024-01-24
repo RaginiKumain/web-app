@@ -1,8 +1,7 @@
 import './style.css';
 import React, { useState, useEffect } from 'react';
 
-const Registration = ({ onSubmit, formData, setUserList }) => {
-
+const Registration = ({ onSubmit, formData }) => {
   const [fieldValidations, setFieldValidations] = useState({});
   const [localFormData, setLocalFormData] = useState({
     username: '',
@@ -16,11 +15,11 @@ const Registration = ({ onSubmit, formData, setUserList }) => {
     // Populate local form data when the formData prop changes
     if (formData) {
       setLocalFormData({
-        username: formData.username || '',
-        phoneNo: formData.phoneNo || '',
-        email: formData.email || '',
-        password: '',
-        confirmPassword: '',
+        username: formData ? formData.username : '',
+        phoneNo: formData ? formData.phoneNo : '',
+        email: formData ? formData.email : '',
+        password:  formData ? formData.password : '',
+        confirmPassword:  formData ? formData.password : '',
       });
     }
   }, [formData]);
@@ -42,80 +41,91 @@ const Registration = ({ onSubmit, formData, setUserList }) => {
       phoneNo: !phoneNoRegex.test(localFormData.phoneNo) && 'Please enter a valid phone number.',
       email: !emailRegex.test(localFormData.email) && 'Please enter a valid email.',
       password: localFormData.password.length < 6 && 'Password should be at least 6 characters.',
-      confirmPassword: localFormData.password !== localFormData.confirmPassword && 'Passwords do not match.',
+      confirmPassword:
+        localFormData.password !== localFormData.confirmPassword &&
+        'Passwords do not match.',
     };
+
+    console.log('Validations:', validations);
 
     setFieldValidations(validations);
 
     return Object.values(validations).every((validation) => !validation);
   };
 
+
+  const handleRequest = async (url, successMessage) => {
+    try {
+      const response = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(localFormData),
+      });
+
+      if (!response.ok) {
+        console.error(`Request failed. Status: ${response.status}`);
+        // Handle request failure
+        return;
+      }
+
+      console.log(successMessage);
+
+      // Check if onSubmit is defined before calling
+      if (typeof onSubmit === 'function') {
+        // onSubmit receives the localFormData
+        await onSubmit(localFormData);
+      }
+
+      // Reset local form data
+      setLocalFormData({
+        username: '',
+        phoneNo: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+      });
+
+      setFieldValidations({});
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   const handleRegister = async (e) => {
     e.preventDefault();
 
     if (validateForm()) {
-      try {
-        // Make the registration request
-        const registrationResponse = await fetch('http://localhost:5000/myapp/registration', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(localFormData),
-        });
-
-        if (!registrationResponse.ok) {
-          console.error(`Registration failed. Status: ${registrationResponse.status}`);
-          // Handle registration failure
-          return;
-        }
-
-        console.log('Registration successful');
-
-        // Fetch the updated user list
-        const userListResponse = await fetch('http://localhost:5000/myapp/userList', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
-        if (userListResponse.ok) {
-          const data = await userListResponse.json();
-          setUserList(data.users);
-        } else {
-          console.error(`Failed to fetch user list. Status: ${userListResponse.status}`);
-          // Handle user list fetch failure
-        }
-
-        // Check if onSubmit is defined before calling
-        if (typeof onSubmit === 'function') {
-          // onSubmit receives the localFormData
-          await onSubmit(localFormData);
-        }
-
-        // Reset local form data
-        setLocalFormData({
-          username: '',
-          phoneNo: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-        });
-
-        setFieldValidations({});
-      } catch (error) {
-        console.error('Error:', error);
-      }
+      await handleRequest(
+        'http://localhost:5000/myapp/registration',
+        'Registration successful'
+      );
     } else {
       console.log('Form has validation errors. Cannot register.');
     }
   };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    if (validateForm()) {
+      await handleRequest(
+        `http://localhost:5000/myapp/user/${formData._id}`, // Use the correct API endpoint for updating a user
+        'PUT', // Specify the HTTP method as PUT
+        localFormData,
+        'Update successful'
+      );
+    } else {
+      console.log('Form has validation errors. Cannot update.');
+    }
+  };
+
+
   return (
     <div className="form-container">
       <h2>{formData ? 'Edit User' : 'Registration'}</h2>
-      <form className="registration-form" onSubmit={handleRegister}>
+      <form className="registration-form" onSubmit={formData ? handleUpdate : handleRegister}>
         <label>
           Username:
           <input
