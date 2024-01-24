@@ -55,7 +55,7 @@ const App = () => {
           <Routes>
             <Route path={`${basePath}/registration`} element={<Registration onSubmit={addUser} formData={null} setUserList={setUserList} />} />
             <Route path={`${basePath}/login`} element={<Login />} />
-            <Route path={`${basePath}/user/:_id/editInfo`} element={<EditInfo userList={userList} />} />
+            <Route path={`${basePath}/user/:_id/editInfo`} element={<EditInfo setUserList={setUserList} />} />
             <Route path={`${basePath}/userList`} element={<UserList userList={userList} />} />
             <Route path={'/'} element={<Navigate to={`${basePath}/userList`} />} />
           </Routes>

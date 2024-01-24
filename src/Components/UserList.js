@@ -8,18 +8,15 @@ const UserList = ({ userList }) => {
   return (
     <div className="user-list">
       <h2>User List</h2>
-      <ul>
-        {userList.map((user) => (
-          <li key={user._id}>
-            <button
-              className="user-item button-style"
-              onClick={() => navigate(`/myapp/user/${user._id}/editInfo`, { state: { user } })}
-            >
-              {user.username}
-            </button>
-          </li>
-        ))}
-      </ul>
+      {userList.map((user) => (
+        <button
+          key={user._id}
+          className="user-item button-style"
+          onClick={() => navigate(`/myapp/user/${user._id}/editInfo`, { state: { user } })}
+        >
+          {user.username}
+        </button>
+      ))}
     </div>
   );
 };

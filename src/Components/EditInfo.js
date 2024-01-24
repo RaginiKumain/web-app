@@ -5,7 +5,7 @@ import Registration from './Registration';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './style.css';
 
-const EditInfo = ({setUserList }) => {
+const EditInfo = ({ setUserList }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [user, setUser] = useState(null);
@@ -45,12 +45,29 @@ const EditInfo = ({setUserList }) => {
         body: JSON.stringify(updatedUser),
       });
 
+      // Fetch the updated user list
+      const userListResponse = await fetch('http://localhost:5000/myapp/userList', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (userListResponse.ok) {
+        const data = await userListResponse.json();
+        setUserList(data.users); // Update the user list in the state
+      } else {
+        console.error(`Failed to fetch user list. Status: ${userListResponse.status}`);
+        // Handle user list fetch failure
+      }
+
       navigate('/myapp/userList'); // Redirect to userList after update
     } catch (error) {
       console.error('Error updating user:', error);
       // Handle error - display a message to the user or perform other actions
     }
   };
+
 
   const handleDelete = async () => {
     try {
