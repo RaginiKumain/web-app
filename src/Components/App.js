@@ -56,7 +56,7 @@ const App = () => {
             <Route path={`${basePath}/registration`} element={<Registration addUser={addUser} userList={userList} setUserList={setUserList} />} />
             <Route path={`${basePath}/login`} element={<Login />} />
             <Route path={`${basePath}/user/:_id/editInfo`} element={<EditInfo userList={userList} />} />
-            <Route path={`${basePath}/userList`} element={<UserList userList={userList} />} />            
+            <Route path={`${basePath}/userList`} element={<UserList userList={userList} />} />
             <Route path={'/'} element={<Navigate to={`${basePath}/userList`} />} />
           </Routes>
         )}
