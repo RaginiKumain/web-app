@@ -54,10 +54,10 @@ const Registration = ({ onSubmit, formData }) => {
   };
 
 
-  const handleRequest = async (url, successMessage) => {
+  const handleRequest = async (url,method, successMessage) => {
     try {
       const response = await fetch(url, {
-        method: 'PUT',
+        method: method,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -99,6 +99,7 @@ const Registration = ({ onSubmit, formData }) => {
     if (validateForm()) {
       await handleRequest(
         'http://localhost:5000/myapp/registration',
+        'POST',
         'Registration successful'
       );
     } else {
