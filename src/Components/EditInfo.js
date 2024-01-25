@@ -75,7 +75,7 @@ const EditInfo = ({ setUserList }) => {
       await fetch(`http://localhost:5000/myapp/user/${location.state.user._id}`, {
         method: 'DELETE',
       });
-
+      setUserList((prevUserList) => prevUserList.filter((u) => u._id !== location.state.user._id));
       navigate('/myapp/userList'); // Redirect to userList after deletion
     } catch (error) {
       console.error('Error deleting user:', error);
